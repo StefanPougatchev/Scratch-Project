@@ -1,12 +1,8 @@
 import React, { useState, useEffect } from "react";
-//import { split as SplitEditor } from "react-ace";
+import { split as SplitEditor } from "react-ace";
 import AceEditor from "react-ace";
 import io from "socket.io-client";
-import { Link } from "react-router-dom";
 import InputRoom from "./InputRoom";
-import { XTerm } from "xterm-for-react";
-import ToolBox from "./ToolBox";
-const socket = io("http://localhost:3000");
 
 // importing all mode which are lanuages
 import "ace-builds/src-noconflict/mode-javascript";
@@ -31,25 +27,14 @@ import "ace-builds/src-noconflict/theme-solarized_light";
 import "ace-builds/src-noconflict/theme-terminal";
 import "ace-builds/src-noconflict/theme-clouds_midnight";
 
-function Editor() {
-  const [mode, setMode] = useState("javascript");
-  const [theme, setTheme] = useState("monokai");
-  //only use if we are using split split screen component
-  const [splitScreen, setSplitScreen] = useState(1);
-  //only use if we are using split split screen componen
-  const [orientation, setOrientation] = useState("beside");
-  const [valueText, setValueText] = useState(
-    "function CodeCollab () {\n console.log('start code collab')\n}"
-  );
-  const [code, setCode] = useState("");
-  const [room, setRoom] = useState("");
-  const [fontSize, setFontSize] = useState(16);
+const socket = io("http://localhost:3000");
 
-  useEffect(() => {
-    socket.on("new-ops event", (data) => {
-      console.log("client side:", data);
-    });
-  });
+function Editor() {
+  const [code, setCode] = useState("Hello");
+  const [room, setRoom] = useState("");
+  const [mode, setMode] = useState("javascript");
+  const [fontSize, setFontSize] = useState(16);
+  const [theme, setTheme] = useState("monokai");
 
   const themes = [
     "monokai",
@@ -77,6 +62,13 @@ function Editor() {
 
   const fontSizes = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
+  const handleChange = (text) => {
+    setCode(text);
+    console.log(code);
+  };
+
+  //console.log(window.location.pathname);
+
   return (
     <div>
       <div>
@@ -86,8 +78,24 @@ function Editor() {
           value={code}
           mode={mode}
           fontSize={fontSize}
-          onChange={(e) => e.target.code}
+          onChange={handleChange}
         />
+      </div>
+      <div>
+        <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+          {themes.map((themeOption, idx) => (
+            <option key={idx.toString()} value={themeOption}>
+              {themeOption}
+            </option>
+          ))}
+        </select>
+        <select value={mode} onChange={(e) => setMode(e.target.value)}>
+          {modes.map((modeOption, idx) => (
+            <option key={idx.toString()} value={modeOption}>
+              {modeOption}
+            </option>
+          ))}
+        </select>
       </div>
     </div>
   );

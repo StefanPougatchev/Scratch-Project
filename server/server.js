@@ -22,16 +22,35 @@ app.use(bodyParser.json());
 //cookie parser
 app.use(cookieParser());
 
+// io.on("connection", (socket) => {
+//   console.log("user connected");
+
+//   socket.on("join", (room) => {
+//     socket.join(room.split("/").join(""));
+//     io.in(room.split("/").join(""));
+//   });
+
+//   socket.on("message", (message) => {
+//     // io.in(message.room).emit("message", {
+//     //   room: message.room,
+//     //   value: message.newValue,
+//     // });
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("user disconnected");
+//   });
+// });
+
 io.on("connection", (socket) => {
-  console.log("new socket connection! socket id: ", socket.id);
-  socket.on("new-ops event", (data) => {
-    console.log(data);
-    const user = {
-      name: data,
-      id: socket.id,
-    };
-    io.emit("connected", user);
-    io.emit("users", Object.values(users));
+  console.log("Server-Side: user connected");
+
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+
+  socket.on("disconnect", () => {
+    console.log("user disconnected");
   });
 });
 

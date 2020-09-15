@@ -7,9 +7,6 @@ import Editor from "./Editor";
 function App() {
   return (
     <Router>
-      <div>
-        <h1></h1>
-      </div>
       <Route path="/" exact component={Login} />
       <Route path="/signup">
         <SignUp />
