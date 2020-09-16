@@ -3,6 +3,7 @@ import { split as SplitEditor } from "react-ace";
 import AceEditor from "react-ace";
 import io from "socket.io-client";
 import InputRoom from "./InputRoom";
+import socket from "socket.io-client";
 
 // importing all mode which are lanuages
 import "ace-builds/src-noconflict/mode-javascript";
@@ -27,10 +28,9 @@ import "ace-builds/src-noconflict/theme-solarized_light";
 import "ace-builds/src-noconflict/theme-terminal";
 import "ace-builds/src-noconflict/theme-clouds_midnight";
 
-const socket = io("http://localhost:3000");
-
 function Editor() {
-  const [code, setCode] = useState("Hello");
+  const socket = io("http://localhost:3000");
+  const [code, setCode] = useState("");
   const [room, setRoom] = useState("");
   const [mode, setMode] = useState("javascript");
   const [fontSize, setFontSize] = useState(16);
@@ -63,9 +63,14 @@ function Editor() {
   const fontSizes = [8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
 
   const handleChange = (text) => {
-    setCode(text);
-    console.log(code);
+    socket.emit("textCode", { text });
   };
+
+  useEffect(() => {
+    socket.on("TextCodeFromServer", (data) => {
+      setCode(data);
+    });
+  }, [code]);
 
   //console.log(window.location.pathname);
 
@@ -76,8 +81,10 @@ function Editor() {
         <AceEditor
           theme={theme}
           value={code}
+          placeholder={"start coding..."}
           mode={mode}
           fontSize={fontSize}
+          setOptions={{ cursorStyle: "smooth" }}
           onChange={handleChange}
         />
       </div>
