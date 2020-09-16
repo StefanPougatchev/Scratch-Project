@@ -3,7 +3,7 @@ import { split as SplitEditor } from "react-ace";
 import AceEditor from "react-ace";
 import io from "socket.io-client";
 import InputRoom from "./InputRoom";
-import socket from "socket.io-client";
+import { socket } from "../socket";
 
 // importing all mode which are lanuages
 import "ace-builds/src-noconflict/mode-javascript";
@@ -29,7 +29,6 @@ import "ace-builds/src-noconflict/theme-terminal";
 import "ace-builds/src-noconflict/theme-clouds_midnight";
 
 function Editor() {
-  const socket = io("http://localhost:3000");
   const [code, setCode] = useState("");
   const [room, setRoom] = useState("");
   const [mode, setMode] = useState("javascript");
